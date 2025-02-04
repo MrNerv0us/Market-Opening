@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forex Market Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .container {
+      display: inline-block;
+      overflow-x: auto;
+      position: relative;
+    }
+    .timezone-selector {
+      margin-bottom: 20px;
+    }
+    .clock {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin: 0 auto;
+      position: relative;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: center;
+      white-space: nowrap;
+      width: 8px;
+    }
+    th {
+      background-color: #eee;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+    td {
+      font-size: 0.8rem;
+    }
+    .highlight {
+      background-color: #90ee90;
+    }
+    .time-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: red;
+      z-index: 10;
+      transition: left 0.5s ease;
+    }
+    .vertical-text {
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      font-size: 0.6rem;
+      line-height: 1;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Forex Market Table</h1>
+  <div class="timezone-selector">
+    <label for="timezone">Wähle deine Zeitzone:</label>
+    <select id="timezone" onchange="updateTable()">
+      <option value="-12">UTC-12 (z. B. Baker Island)</option>
+      <option value="-11">UTC-11 (z. B. Amerikanisch-Samoa)</option>
+      <option value="-10">UTC-10 (z. B. Hawaii)</option>
+      <option value="-9">UTC-9 (z. B. Alaska)</option>
+      <option value="-8">UTC-8 (z. B. Kalifornien, USA)</option>
+      <option value="-7">UTC-7 (z. B. Denver, USA)</option>
+      <option value="-6">UTC-6 (z. B. Mexiko-Stadt)</option>
+      <option value="-5" selected>UTC-5 (z. B. New York, USA)</option>
+      <option value="-4">UTC-4 (z. B. Caracas, Venezuela)</option>
+      <option value="-3">UTC-3 (z. B. Buenos Aires, Argentinien)</option>
+      <option value="-2">UTC-2 (z. B. Südgeorgien)</option>
+      <option value="-1">UTC-1 (z. B. Azoren)</option>
+      <option value="0">UTC+0 (z. B. London, Großbritannien)</option>
+      <option value="1">UTC+1 (z. B. Berlin, Deutschland)</option>
+      <option value="2">UTC+2 (z. B. Kairo, Ägypten)</option>
+      <option value="3">UTC+3 (z. B. Moskau, Russland)</option>
+      <option value="4">UTC+4 (z. B. Dubai, VAE)</option>
+      <option value="5">UTC+5 (z. B. Islamabad, Pakistan)</option>
+      <option value="6">UTC+6 (z. B. Dhaka, Bangladesch)</option>
+      <option value="7">UTC+7 (z. B. Bangkok, Thailand)</option>
+      <option value="8">UTC+8 (z. B. Peking, China)</option>
+      <option value="9">UTC+9 (z. B. Tokio, Japan)</option>
+      <option value="10">UTC+10 (z. B. Sydney, Australien)</option>
+      <option value="11">UTC+11 (z. B. Salomonen)</option>
+      <option value="12">UTC+12 (z. B. Neuseeland)</option>
+    </select>
+  </div>
+  <div class="clock" id="current-time">Lädt...</div>
+  <div class="container" id="table-container">
+    <div class="time-marker" id="time-marker"></div>
+    <table id="market-table">
+      <tr>
+        <th>Time</th>
+        <script>
+          for (let i = 0; i < 48; i += 2) {
+            const hour = String((i / 2) % 24).padStart(2, '0');
+            document.write(`<th colspan='2'><div class='vertical-text'>${hour}:00</div></th>`);
+          }
+        </script>
+      </tr>
+      <tr><td>Sydney</td></tr>
+      <tr><td>Tokyo</td></tr>
+      <tr><td>London</td></tr>
+      <tr><td>New York</td></tr>
+    </table>
+  </div>
+  <script>
+    const markets = [
+      { name: "Sydney", open: 22, close: 6 },
+      { name: "Tokyo", open: 0, close: 8 },
+      { name: "London", open: 8, close: 16 },
+      { name: "New York", open: 13, close: 21 }
+    ];
+
+    function updateTable() {
+      const timezoneOffset = parseInt(document.getElementById("timezone").value);
+      const rows = document.querySelectorAll("#market-table tr");
+
+      rows.forEach((row, index) => {
+        if (index === 0) return; // Skip header row
+
+        const market = markets[index - 1];
+        const openHour = (market.open + timezoneOffset + 24) % 24;
+        const closeHour = (market.close + timezoneOffset + 24) % 24;
+
+        const openIndex = openHour * 2 + 1;
+        const closeIndex = closeHour * 2 + 1;
+
+        for (let i = 1; i <= 48; i++) {
+          const cell = row.cells[i] || document.createElement("td");
+          cell.classList.remove("highlight");
+          if ((openIndex < closeIndex && i >= openIndex && i < closeIndex) ||
+              (openIndex > closeIndex && (i >= openIndex || i < closeIndex))) {
+            cell.classList.add("highlight");
+          }
+          if (!row.cells[i]) row.appendChild(cell);
+        }
+      });
+    }
+
+    function updateClock() {
+      const timezoneOffset = parseInt(document.getElementById("timezone").value);
+      const now = new Date();
+      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+      const localTime = new Date(utc + timezoneOffset * 3600000);
+
+      const hours = localTime.getHours();
+      const minutes = localTime.getMinutes();
+      const seconds = localTime.getSeconds();
+      const totalMinutes = hours * 60 + minutes;
+
+      const marker = document.getElementById("time-marker");
+      const table = document.getElementById("market-table");
+      const firstColumnWidth = table.rows[0].cells[0].offsetWidth;
+      const tableWidth = table.offsetWidth - firstColumnWidth;
+
+      const markerPosition = Math.min(
+        (totalMinutes / (24 * 60)) * tableWidth,
+        tableWidth - 1
+      );
+
+      marker.style.left = `${firstColumnWidth + markerPosition}px`;
+
+      document.getElementById("current-time").textContent = `Aktuelle Zeit: ${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    }
+
+    setInterval(() => {
+      updateClock();
+      updateTable();
+    }, 1000);
+
+    updateClock();
+    updateTable();
+  </script>
+</body>
+</html>
