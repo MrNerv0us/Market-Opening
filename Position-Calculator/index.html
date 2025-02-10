@@ -2,17 +2,25 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Position Calculator</title>
+    <title>Trading Calculator</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 10px;
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-color: #f8f9fa;
         }
         .container {
+            width: 100%;
             max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
         }
         .btn-custom {
             padding: 10px;
@@ -24,17 +32,9 @@
         label {
             font-size: 0.9rem;
         }
-        .row-custom {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .col-custom {
-            padding: 5px;
-            flex: 1;
-        }
         @media (max-width: 576px) {
             .container {
-                width: 100%;
+                width: 90%;
             }
             .btn-custom {
                 font-size: 1rem;
@@ -46,17 +46,17 @@
     </style>
 </head>
 <body>
-    <div class="container bg-white p-3 shadow rounded">
-        <h4 class="text-center">Position Calculator</h4>
+    <div class="container">
+        <h4 class="text-center">Trading Calculator</h4>
         <form>
             <div class="row">
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="orderPrice">Entry Price</label>
                         <input type="number" class="form-control" id="orderPrice" placeholder="Entry price">
                     </div>
                 </div>
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="stopLoss">Stop Loss</label>
                         <input type="number" class="form-control" id="stopLoss" placeholder="S/L">
@@ -64,26 +64,22 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="takeProfit">Take Profit</label>
                         <input type="number" class="form-control" id="takeProfit" placeholder="Take profit">
                     </div>
                 </div>
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="leverage">Leverage</label>
                         <input type="number" class="form-control" id="leverage" placeholder="Leverage">
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label for="riskAmount">Risk Amount ($)</label>
-                        <input type="number" class="form-control" id="riskAmount" placeholder="Risk amount">
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="riskAmount">Risk Amount ($)</label>
+                <input type="number" class="form-control" id="riskAmount" placeholder="Risk amount">
             </div>
             <div class="row">
                 <div class="col-6">
@@ -95,13 +91,13 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="orderQty">Order Qty</label>
                         <input type="text" class="form-control" id="orderQty" readonly>
                     </div>
                 </div>
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="orderValue">Order Value</label>
                         <input type="text" class="form-control" id="orderValue" readonly>
@@ -109,13 +105,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="orderCost">Order Cost</label>
                         <input type="text" class="form-control" id="orderCost" readonly>
                     </div>
                 </div>
-                <div class="col-6 col-custom">
+                <div class="col-6">
                     <div class="form-group">
                         <label for="takeProfitResult">Take Profit</label>
                         <input type="text" class="form-control" id="takeProfitResult" readonly>
