@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradingView Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #121212;
+        }
+
+        .tradingview-widget-container {
+            width: 100vw;
+            height: 100vh; /* Stellt sicher, dass es die volle Höhe verwendet */
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .tradingview-widget-container__widget {
+            width: 100%;
+            height: 100%; /* Stellt sicher, dass die Chart auch 100% der Höhe nutzt */
+        }
+    </style>
+</head>
+<body>
+    <div class="tradingview-widget-container">
+        <div id="tradingview-widget" class="tradingview-widget-container__widget"></div>
+    </div>
+
+    <script>
+        function loadTradingViewWidget() {
+            let userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Etc/UTC";
+
+            let script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "autosize": true,
+                "symbol": "BINANCE:BTCUSDT.P",
+                "interval": "D",
+                "timezone": userTimezone,
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "withdateranges": true,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "calendar": false,
+                "hide_volume": true,
+                "support_host": "https://www.tradingview.com"
+            });
+
+            document.getElementById("tradingview-widget").appendChild(script);
+        }
+
+        window.onload = loadTradingViewWidget;
+    </script>
+</body>
+</html>
