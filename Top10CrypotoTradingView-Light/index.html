@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradingView Ticker Tape with Top 10 Cryptos</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+    .tradingview-widget-container {
+      width: 100vw;
+      max-width: 100%;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- TradingView Widget Container -->
+  <div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget" id="tradingview-widget"></div>
+    <div class="tradingview-widget-copyright">
+      <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
+        <span class="blue-text">Track all markets on TradingView</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Funktion zum Abrufen der Top 10 Kryptowährungen von CoinGecko
+    async function fetchTop10Cryptos() {
+      const apiUrl = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=12&page=1&sparkline=false';
+
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Fehler beim Abrufen der Daten von CoinGecko:', error);
+        return [];
+      }
+    }
+
+    // Funktion zum Formatieren der Symbole für TradingView
+    function formatSymbol(coin) {
+      const symbol = coin.symbol.toUpperCase();
+      if (symbol === 'USDT') {
+        return 'BINANCEUS:USDTUSD'; // Sonderfall für Tether
+      } else {
+        return `BINANCE:${symbol}USDT`; // Standardformat
+      }
+    }
+
+    // Funktion zum Filtern der Symbole und Ersetzen von stETH und wstETH
+    function filterAndReplaceExcludedCoins(coins) {
+      const excludedIds = ['staked-ether', 'wrapped-steth']; // IDs der auszuschließenden Kryptos
+      const filteredCoins = coins.filter(coin => !excludedIds.includes(coin.id));
+      return filteredCoins.slice(0, 10); // Begrenze auf 10 Symbole
+    }
+
+    // Funktion zum Laden des TradingView-Widgets
+    function loadTradingViewWidget(symbols) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        "symbols": symbols.map(symbol => ({
+          "description": "",
+          "proName": symbol
+        })),
+        "showSymbolLogo": true,
+        "isTransparent": false,
+        "displayMode": "adaptive",
+        "colorTheme": "light",
+        "locale": "en"
+      });
+
+      // Vorhandenes Widget entfernen und neues Widget einfügen
+      const widgetContainer = document.getElementById('tradingview-widget');
+      widgetContainer.innerHTML = ''; // Altes Widget löschen
+      widgetContainer.appendChild(script);
+    }
+
+    // Hauptfunktion zum Initialisieren des Widgets
+    async function initializeWidget() {
+      const coins = await fetchTop10Cryptos();
+      if (coins.length > 0) {
+        const filteredCoins = filterAndReplaceExcludedCoins(coins);
+        const symbols = filteredCoins.map(coin => formatSymbol(coin));
+        loadTradingViewWidget(symbols);
+      }
+    }
+
+    // Widget initialisieren
+    initializeWidget();
+  </script>
+</body>
+</html>
