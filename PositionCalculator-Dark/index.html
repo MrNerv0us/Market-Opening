@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Calculator</title>
+    <title>Position Calculator</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -35,6 +35,11 @@
             color: #ffffff;
             border: 1px solid #444;
         }
+        .form-control[readonly] {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #444;
+        }
         .form-control::placeholder {
             color: #888;
         }
@@ -61,7 +66,7 @@
 </head>
 <body>
     <div class="container">
-        <h4 class="text-center">Trading Calculator</h4>
+        <h4 class="text-center">Position Calculator</h4>
         <form>
             <div class="row">
                 <div class="col-6">
@@ -139,17 +144,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    
     <script>
         document.getElementById('calculateBtn').addEventListener('click', function () {
-            calculateResults();
-        });
-
-        document.getElementById('clearBtn').addEventListener('click', function () {
-            clearValues();
-        });
-
-        function calculateResults() {
             let order = parseFloat(document.getElementById('orderPrice').value);
             let sl = parseFloat(document.getElementById('stopLoss').value);
             let tp = parseFloat(document.getElementById('takeProfit').value);
@@ -157,7 +154,7 @@
             let risk = parseFloat(document.getElementById('riskAmount').value);
 
             if (isNaN(order) || isNaN(sl) || isNaN(tp) || isNaN(lev) || isNaN(risk)) {
-                alert('Bitte füllen Sie alle Felder aus');
+                alert('Please fill in all fields');
                 return;
             }
 
@@ -171,11 +168,7 @@
             document.getElementById('orderValue').value = orderValue.toFixed(2);
             document.getElementById('orderCost').value = cost.toFixed(2);
             document.getElementById('takeProfitResult').value = win.toFixed(2);
-        }
-
-        function clearValues() {
-            document.querySelectorAll('.form-control').forEach(input => input.value = '');
-        }
+        });
     </script>
 </body>
 </html>
